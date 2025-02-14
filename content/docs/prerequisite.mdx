@@ -42,7 +42,7 @@ void freeReg(){
     printf("All registers already free.");
   }
 }
-````
+```
 
 </Card>
 
@@ -103,17 +103,13 @@ In the context of an assigment statement, here's what happens.
 
 Given the assignment statement
 
-```
-
-a = 3\*4;
-
-```
+```a = 3*4;```
 
 - Use a register `R0` to store the address of `a`.
 - Calculate the RHS arithmetic expression and store the result in the register `R1`.
 - Move the contents of `R1` to the address of `a`, stored in `R0` through the assembly instruction
 
-```
+````
 
 MOV [R1] R0
 
@@ -130,7 +126,7 @@ void checkLeak(){
     exit(1);
   }
 }
-````
+```
 
 </Card>
 This function can be called after the code generation for statements like Assignment statements.
@@ -138,7 +134,3 @@ This function can be called after the code generation for statements like Assign
 ### Conclusion
 
 The code snippets provide above merely serve as a demonstration of possibilities, not a prescribed way to tackle the task. Each student enrolled in the compiler lab course will bring their own unique approach and style to writing the programs. Embrace the opportunity to explore, optimize, and innovate in your solutions.
-
-```
-
-```
