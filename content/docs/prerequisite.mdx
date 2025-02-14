@@ -90,9 +90,25 @@ void popRegisters(FILE* f){
 </Card>
 
 
+
 You might have noticed that we started popping from `highestUsedReg-1`. This is attributed to the fact that the return value is stored in `highestUsedReg`, and we don't want to discard it just yet.
 
-### 5. Optional Functions
+### 5 . Acquiring a label.
+While dealing with functions, each one of them must be assigned a unique label like **F0** or **F1**. To handle this,
+a function can be created to acquire a label and provide it for a function definition.
+
+<Card title="Sample code for Acquiring a label">
+```c
+int getLabel(void){
+  ++highestUsedLabel;
+  return highestUsedLabel;
+}
+```
+</Card>
+
+Since no constraints are placed on the amount of functions a code can have, ```highestUsedLabel``` can extend upto **INT_MAX**.
+
+### 6. Optional Functions
 
 #### Register Leaks
 
@@ -101,13 +117,17 @@ In the context of an assigment statement, here's what happens.
 
 Given the assignment statement
 
-```a = 3*4;```
+````
+a = 3*4;
+````
 
 - Use a register `R0` to store the address of `a`.
 - Calculate the RHS arithmetic expression and store the result in the register `R1`.
 - Move the contents of `R1` to the address of `a`, stored in `R0` through the assembly instruction
 
-``` MOV [R0] R1 ```
+````
+MOV [R0] R1
+````
 
 Now, free both the registers since the assignment statement has been executed.
 The post-execution of an assigment statement does not require a register to be returned/used. Therefore, the `highestUsedReg` will always be -1.
@@ -122,6 +142,7 @@ void checkLeak(){
 }
 ```
 </Card>
+
 
 This function can be called after the code generation for statements like Assignment statements.
 
