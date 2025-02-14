@@ -22,14 +22,11 @@ int getReg(void){
   }
   return ++highestUsedReg;
 }
+```
 
-````
 </Card>
 
-
 Since the XSM virtual machine contains 20 general purpose registers, define **NOR** to be 20.
-
-
 
 ### 2 . Freeing a Register
 
@@ -91,11 +88,11 @@ void popRegisters(FILE* f){
 
 }
 
-````
+```
+
 </Card>
 
-You might have noticed that we started popping from ```highestUsedReg-1```. This is attributed to the fact that the return value is stored in ```highestUsedReg```, and we don't want to discard it just yet.
-
+You might have noticed that we started popping from `highestUsedReg-1`. This is attributed to the fact that the return value is stored in `highestUsedReg`, and we don't want to discard it just yet.
 
 ### 5. Optional Functions
 
@@ -105,19 +102,25 @@ There are a few more functions you could implement to ease error-checking. One s
 In the context of an assigment statement, here's what happens.
 
 Given the assignment statement
-```
-a = 3*4;
-```
-- Use a register ```R0``` to store the address of ```a```.
-- Calculate the RHS arithmetic expression and store the result in the register ```R1```.
-- Move the contents of ```R1``` to the address of ```a```, stored in ```R0``` through the assembly instruction
 
 ```
-MOV [R1] R0
+
+a = 3\*4;
+
 ```
+
+- Use a register `R0` to store the address of `a`.
+- Calculate the RHS arithmetic expression and store the result in the register `R1`.
+- Move the contents of `R1` to the address of `a`, stored in `R0` through the assembly instruction
+
+```
+
+MOV [R1] R0
+
+````
 
 Now, free both the registers since the assignment statement has been executed.
-The post-execution of an assigment statement does not require a register to be returned/used. Therefore, the ```highestUsedReg``` will always be -1.
+The post-execution of an assigment statement does not require a register to be returned/used. Therefore, the `highestUsedReg` will always be -1.
 
 <Card title="Sample Code for Checking Leaks">
 ```c
@@ -135,3 +138,7 @@ This function can be called after the code generation for statements like Assign
 ### Conclusion
 
 The code snippets provide above merely serve as a demonstration of possibilities, not a prescribed way to tackle the task. Each student enrolled in the compiler lab course will bring their own unique approach and style to writing the programs. Embrace the opportunity to explore, optimize, and innovate in your solutions.
+
+```
+
+```
