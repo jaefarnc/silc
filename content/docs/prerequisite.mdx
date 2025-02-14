@@ -94,7 +94,7 @@ void popRegisters(FILE* f){
 You might have noticed that we started popping from `highestUsedReg-1`. This is attributed to the fact that the return value is stored in `highestUsedReg`, and we don't want to discard it just yet.
 
 ### 5 . Acquiring a label.
-While dealing with functions, each one of them must be assigned a unique label like **F0** or **F1**. To handle this,
+While dealing with functions, it is important to note that every one of them must be assigned a unique label such as **F0** or **F1**. To handle this,
 a function can be created to acquire a label and provide it for a function definition.
 
 <Card title="Sample code for Acquiring a label">
