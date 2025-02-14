@@ -1,0 +1,137 @@
+---
+title: Prerequisite Codes
+description: You'll need a few essential helper functions to lay the groundwork! Keep in mind that the sample implementations provided here are just one of many possible approaches.
+---
+
+<Callout>
+  Make sure you've read through the [ABI
+  documentation](https://fumadocs.vercel.app/docs/ui/markdown) before proceeding
+  further.
+</Callout>
+
+### 1 . Acquiring a Register
+
+One of the main functions you'll be using in this course, throughout every code generation function is the **getReg()** function. There are varying implementations of the code, and one such implementation is as follows.
+
+<Card title="Sample Code for Acquiring a Register">
+```c
+int getReg(void){
+  if( highestUsedReg == NOR - 1 ){ // NOR is defined as the highest number of registers one can use.
+      printf("Cannot allocate more registers.");
+      exit(1);
+  }
+  return ++highestUsedReg;
+}
+
+````
+</Card>
+
+
+Since the XSM virtual machine contains 20 general purpose registers, define **NOR** to be 20.
+
+
+
+### 2 . Freeing a Register
+
+It is important to ensure that registers that have served their purpose are freed for future use, following exhibits a sample code for the **freeReg()** function.
+
+<Card title="Sample Code for Freeing a Register">
+```c
+void freeReg(){
+  if( highestUsedReg >= 0 ){
+    --highestUsedReg;
+  }
+  else{
+    printf("All registers already free.");
+  }
+}
+````
+
+</Card>
+
+### 3 . Pushing registers into the stack.
+
+This function will not be of much use until you come across invoking functions in Stage 5.
+This function is used to **_Save the State_** of the system. When you invoke a function, you need to ensure that
+you are allowed to use all the 20 registers (R0-R19). However, if some registers contain values that are used once the function returns,
+you cannot use those registers while executing the function.
+
+To ensure that you can, **PUSH** the contents of all the used registers into the
+stack, so they can later be extracted and the values be placed in the same registers
+as in the original state (which we will handle in the next function).
+
+Here is one such implementation of the function.
+
+<Card title="Sample Code for Pushing Used Registers">
+```c
+void pushRegisters(FILE* f){
+  for(int i=0;i<=highestUsedReg;i++){
+    fprintf(f,"PUSH R%d\n",i);
+  }
+}
+```
+</Card>
+
+It is important to note that while some system calls like **_read_** and **_write_** are implemented in the earlier stages,
+you are supposed to push the registers into the stack beforehand. However, this can also be avoided as there does not exist a condition
+where registers are in use while executing such system calls.
+
+### 4 . Popping registers from the stack.
+
+Under the assumption that you have popped the return values and arguments from the stack, now popping the registers is required. (Why?)
+
+Now, pop them in the reverse order to ensure that the state before and after the function invocation remains the same.
+
+<Card title="Sample Code for Popping Registers">
+```c
+void popRegisters(FILE* f){
+  for(int i=highestUsedReg-1;i>=0;i--){
+    fprintf(f,"POP R%d\n",i);
+  }
+
+}
+
+````
+</Card>
+
+You might have noticed that we started popping from ```highestUsedReg-1```. This is attributed to the fact that the return value is stored in ```highestUsedReg```, and we don't want to discard it just yet.
+
+
+### 5. Optional Functions
+
+#### Register Leaks
+
+There are a few more functions you could implement to ease error-checking. One such function is to check for **register leaks**.
+In the context of an assigment statement, here's what happens.
+
+Given the assignment statement
+```
+a = 3*4;
+```
+- Use a register ```R0``` to store the address of ```a```.
+- Calculate the RHS arithmetic expression and store the result in the register ```R1```.
+- Move the contents of ```R1``` to the address of ```a```, stored in ```R0``` through the assembly instruction
+
+```
+MOV [R1] R0
+```
+
+Now, free both the registers since the assignment statement has been executed.
+The post-execution of an assigment statement does not require a register to be returned/used. Therefore, the ```highestUsedReg``` will always be -1.
+
+<Card title="Sample Code for Checking Leaks">
+```c
+void checkLeak(){
+  if(highestUsedReg > -1 ){
+    printf("Register leak present\n");
+    exit(1);
+  }
+}
+````
+
+</Card>
+This function can be called after the code generation for statements like Assignment statements.
+
+### Conclusion
+
+The code snippets provide above merely serve as a demonstration of possibilities, not a prescribed way to tackle the task. Each student enrolled in the compiler lab course will bring their own unique approach and style to writing the programs. Embrace the opportunity to explore, optimize, and innovate in your solutions.
