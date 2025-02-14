@@ -5,7 +5,7 @@ description: You'll need a few essential helper functions to lay the groundwork!
 
 <Callout>
   Make sure you've read through the [ABI
-  documentation](https://fumadocs.vercel.app/docs/ui/markdown) before proceeding
+  documentation](http://silcnitc.github.io/abi.html) before proceeding
   further.
 </Callout>
 
@@ -13,7 +13,6 @@ description: You'll need a few essential helper functions to lay the groundwork!
 
 One of the main functions you'll be using in this course, throughout every code generation function is the **getReg()** function. There are varying implementations of the code, and one such implementation is as follows.
 
-<Card title="Sample Code for Acquiring a Register">
 ```c
 int getReg(void){
   if( highestUsedReg == NOR - 1 ){ // NOR is defined as the highest number of registers one can use.
@@ -24,7 +23,6 @@ int getReg(void){
 }
 ```
 
-</Card>
 
 Since the XSM virtual machine contains 20 general purpose registers, define **NOR** to be 20.
 
@@ -32,7 +30,6 @@ Since the XSM virtual machine contains 20 general purpose registers, define **NO
 
 It is important to ensure that registers that have served their purpose are freed for future use, following exhibits a sample code for the **freeReg()** function.
 
-<Card title="Sample Code for Freeing a Register">
 ```c
 void freeReg(){
   if( highestUsedReg >= 0 ){
@@ -44,12 +41,10 @@ void freeReg(){
 }
 ```
 
-</Card>
-
 ### 3 . Pushing registers into the stack.
 
 This function will not be of much use until you come across invoking functions in Stage 5.
-This function is used to **_Save the State_** of the system. When you invoke a function, you need to ensure that
+This function is used to **Save the State** of the system. When you invoke a function, you need to ensure that
 you are allowed to use all the 20 registers (R0-R19). However, if some registers contain values that are used once the function returns,
 you cannot use those registers while executing the function.
 
@@ -59,7 +54,6 @@ as in the original state (which we will handle in the next function).
 
 Here is one such implementation of the function.
 
-<Card title="Sample Code for Pushing Used Registers">
 ```c
 void pushRegisters(FILE* f){
   for(int i=0;i<=highestUsedReg;i++){
@@ -67,7 +61,6 @@ void pushRegisters(FILE* f){
   }
 }
 ```
-</Card>
 
 It is important to note that while some system calls like **_read_** and **_write_** are implemented in the earlier stages,
 you are supposed to push the registers into the stack beforehand. However, this can also be avoided as there does not exist a condition
@@ -79,7 +72,6 @@ Under the assumption that you have popped the return values and arguments from t
 
 Now, pop them in the reverse order to ensure that the state before and after the function invocation remains the same.
 
-<Card title="Sample Code for Popping Registers">
 ```c
 void popRegisters(FILE* f){
   for(int i=highestUsedReg-1;i>=0;i--){
@@ -90,7 +82,6 @@ void popRegisters(FILE* f){
 
 ```
 
-</Card>
 
 You might have noticed that we started popping from `highestUsedReg-1`. This is attributed to the fact that the return value is stored in `highestUsedReg`, and we don't want to discard it just yet.
 
@@ -109,16 +100,11 @@ Given the assignment statement
 - Calculate the RHS arithmetic expression and store the result in the register `R1`.
 - Move the contents of `R1` to the address of `a`, stored in `R0` through the assembly instruction
 
-````
-
-MOV [R1] R0
-
-````
+``` MOV [R0] R1 ```
 
 Now, free both the registers since the assignment statement has been executed.
 The post-execution of an assigment statement does not require a register to be returned/used. Therefore, the `highestUsedReg` will always be -1.
 
-<Card title="Sample Code for Checking Leaks">
 ```c
 void checkLeak(){
   if(highestUsedReg > -1 ){
@@ -128,7 +114,6 @@ void checkLeak(){
 }
 ```
 
-</Card>
 This function can be called after the code generation for statements like Assignment statements.
 
 ### Conclusion
